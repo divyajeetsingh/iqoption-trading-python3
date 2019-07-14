@@ -36,8 +36,9 @@ class IQOption():
         """Generates Required Urls to operate the API"""
         
         self.api_url = "https://{}/api/".format(self.host)
+
         self.socket_url = "wss://{}/echo/websocket".format(self.host)
-        self.login_url = self.api_url+"login"
+        self.login_url = 'https://auth.iqoption.com/api/v1.0/login'
         self.profile_url = self.api_url+"profile"
         self.change_account_url = self.profile_url+"/"+"changebalance"
         self.getprofile_url = self.api_url+"getprofile"
@@ -48,7 +49,10 @@ class IQOption():
         data = {"email":self.username,"password":self.password}
         self.__login_response = self.session.request(url=self.login_url,data=data,method="POST")
         requests.utils.add_dict_to_cookiejar(self.session.cookies, dict(platform="9"))
+        print(self.__login_response.json())
+        
         json_login_response = self.__login_response.json()
+        
         if json_login_response["isSuccessful"]:
             self.__ssid = self.__login_response.cookies["ssid"]
             self.parse_account_info(json_login_response)
